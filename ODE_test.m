@@ -45,14 +45,14 @@ subplot(1, 2, 2)
 plot(time, out)
 title("Omega(t)")
 xlim([0, simDuration(2)])
-ylim([0, 2])
+ylim([0, round(omega_max/10)*10+10])
 
 
 %% Functions
 
 function dydt = SHM(t, y, m, k, c, F0, omega_max, t_maxRPM)
     omega = omega_F(t, omega_max, t_maxRPM);
-    evalin("base", "itr = itr + 1");
+    evalin("base", "itr = itr + 1;");
     
     dydt = zeros(2,1);
     dydt(1) = y(2);
@@ -61,7 +61,7 @@ end
 
 function omega = omega_F(t, omega_max, t_of_omega_max)
     if t < t_of_omega_max
-        omega = omega_max/t_of_omega_max*t
+        omega = omega_max/t_of_omega_max*t;
     else
         %disp("Max omega reached");
         omega = omega_max;
