@@ -1,4 +1,4 @@
-m = 40;
+m = 60;
 k = 9*2;
 c = 120*2;
 RPM = 0;
@@ -40,8 +40,8 @@ plot(t,spin_profile, 'red');
 title("R.P.M w.r.t time")
 xlabel("Time (s)")                                                                                                                                          
 ylabel("RPM")
-xlim([0, simDuration])
-ylim([0, maxRPM + 100])
+xlim([0, 300])
+ylim([0, 300])
 
 
 %% Functions
@@ -61,15 +61,30 @@ function dydt= tub_motion(t, y, m, k, c, m_unb, r, maxRPM, t_maxRPM)
 end
 
 function rpm = get_rpm(t, maxRPM, t_maxRPM)
+    tStart = 0;
+    tEnd = 140;
     if t <= 140
         rpm = 0;
-    elseif (140 < t) && (t <=150)
-        rpm = maxRPM;
+    elseif (140 < t) && (t <=141)
+        rpm = interp1([140,150], [0,5], t);
+    elseif (150 < t) && (t <=168)
+        rpm = interp1([150,168], [5,10], t);
+    elseif (168 < t) && (t <=180)
+        rpm = interp1([168,180], [10,15], t);
+    elseif (180 < t) && (t <=190)
+        rpm = interp1([180,190], [15,20], t);
+    elseif (190 < t) && (t <=195)
+        rpm = interp1([190,195], [20,25], t);
+    elseif (195 < t) && (t <=210)
+        rpm = interp1([195,210], [110,110], t);    
+    elseif (210 < t) && (t <=215)
+        rpm = interp1([210,215], [110,90], t);
+
+    else
+        rpm = 100;
     end
 
     %assignin('caller', dump_array, "spin_profile");
     %dump_array = [dump_array; rpm]
     %assignin('base',"spin_profile" ,dump_array);
 end
-
-
