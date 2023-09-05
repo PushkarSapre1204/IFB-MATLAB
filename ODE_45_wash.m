@@ -1,22 +1,23 @@
 m = 60;
 k = 9*2;
 c = 120*2;
-RPM = 0;
-maxRPM = 1400;
-t_maxRPM = 150;
 m_unb = 0.5;
 r = 0.25;
 
 simDuration = 400;
 
-[t, y]= ode45(@(t,y) tub_motion(t, y, m, k, c, m_unb, r, maxRPM, t_maxRPM), [0,simDuration], [0,0]);
+spinProfileIndex = 1;
+
+spinProfile = [0, 150, 160, 170, 180, 190, 200 ; 0, 0, 5, 10, 15, 20, 25]
+
+[t, y]= ode45(@(t,y) tub_motion(t, y, m, k, c, m_unb, r, spinProfile), [0,simDuration], [0,0]);
 
 %Create zero array for spin profile
-spin_profile = zeros(length(t), 1);
+spin_profile_recreated = zeros(length(t), 1);
 
 %Generate the spin profile using the time steps output of ODE45
 for i = 1:length(t)
-    spin_profile(i) = get_rpm(t(i), maxRPM, t_maxRPM);  
+    spin_profile_recreated(i) = get_rpm(t(i), maxRPM, t_maxRPM);  
 end
 
 %% Plotting
@@ -36,7 +37,7 @@ xlim([0,simDuration])
 %ylim([-0.0035, 0.045])
 
 subplot(1, 2, 2)
-plot(t,spin_profile, 'red');
+plot(t,spin_profile_recreated, 'red');
 title("R.P.M w.r.t time")
 xlabel("Time (s)")                                                                                                                                          
 ylabel("RPM")
@@ -47,8 +48,8 @@ ylim([0, 300])
 %% Functions
 
 % Input to ODE45
-function dydt= tub_motion(t, y, m, k, c, m_unb, r, maxRPM, t_maxRPM)
-    rpm = get_rpm(t, maxRPM, t_maxRPM);
+function dydt= tub_motion(t, y, m, k, c, m_unb, r, spin_profile)
+    rpm = get_rpm(t, spin_profile);
 %     disp("t = ")
 %     disp(t)
 %     disp("y = ")
@@ -60,31 +61,15 @@ function dydt= tub_motion(t, y, m, k, c, m_unb, r, maxRPM, t_maxRPM)
     dydt(2) = F0/m*sin(omega*t) - k/m*y(1) - c/m*y(2);
 end
 
-function rpm = get_rpm(t, maxRPM, t_maxRPM)
-    tStart = 0;
-    tEnd = 140;
-    if t <= 140
-        rpm = 0;
-    elseif (140 < t) && (t <=141)
-        rpm = interp1([140,150], [0,5], t);
-    elseif (150 < t) && (t <=168)
-        rpm = interp1([150,168], [5,10], t);
-    elseif (168 < t) && (t <=180)
-        rpm = interp1([168,180], [10,15], t);
-    elseif (180 < t) && (t <=190)
-        rpm = interp1([180,190], [15,20], t);
-    elseif (190 < t) && (t <=195)
-        rpm = interp1([190,195], [20,25], t);
-    elseif (195 < t) && (t <=210)
-        rpm = interp1([195,210], [110,110], t);    
-    elseif (210 < t) && (t <=215)
-        rpm = interp1([210,215], [110,90], t);
-
+function rpm = get_rpm(t, spin_profile)
+    i1 = evalin("base", "spinProfileIndex");
+    tStart = spin_profile(1, i1);
+    tEnd = spin_profile(1, i1+1);
+    if t <= tEnd
+        rpm = interp1([tStart, tEnd], [spin_profile(2,i1), spin_profile(2,i1+1)], t);
     else
-        rpm = 100;
+        i1 = i1+1
+        assignin("base", "spinProfileIndex", i1)
+         rpm = get_rpm(t, spin_profile)
     end
-
-    %assignin('caller', dump_array, "spin_profile");
-    %dump_array = [dump_array; rpm]
-    %assignin('base',"spin_profile" ,dump_array);
 end

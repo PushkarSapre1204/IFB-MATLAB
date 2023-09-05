@@ -38,7 +38,7 @@ subplot(1, 2, 1)
 plot(t, y(:, 1))
 title("Disp (x)")
 xlim([0, simDuration(2)])
-ylim([-0.4, 0.4])
+%ylim([-0.025, 0.025])
 
 subplot(1, 2, 2)
 %plot(t, y(:, 2))
@@ -60,6 +60,8 @@ function dydt = SHM(t, y, m, k, c, F0, omega_max, t_maxRPM)
 end 
 
 function omega = omega_F(t, omega_max, t_of_omega_max)
+    disp("t input to omega() = ")
+    disp(t)
     if t < t_of_omega_max
         omega = omega_max/t_of_omega_max*t;
     else
