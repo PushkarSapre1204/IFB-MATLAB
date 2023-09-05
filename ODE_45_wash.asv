@@ -24,7 +24,7 @@ simDuration = spinProfile(1,end);
 spin_profile_recreated = zeros(length(t), 1);
 
 %Generate the spin profile using the time steps output of ODE45
-
+dummyVar = 10;
 for i = 1:length(t)
     spin_profile_recreated(i) = get_rpm(t(i), spinProfile);  
 end
@@ -59,6 +59,10 @@ ylim([0, 1500])
 % Input to ODE45
 function dydt= tub_motion(t, y, m, k, c, m_unb, r, spin_profile)
     rpm = get_rpm(t, spin_profile);
+%     disp("t = ")
+%     disp(t)
+%     disp("y = ")
+%     disp(y)
     omega = rpm*2*pi/60;
     F0 = m_unb*(omega)^2*r;
     dydt = zeros(2,1);
@@ -68,5 +72,5 @@ end
 
 function rpm = get_rpm(t, spin_profile)
     %build spin profile:
-    rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "spline");
+    rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "pchip");
 end
