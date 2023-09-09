@@ -6,14 +6,10 @@ r = 0.25;
 
 spinProfileIndex = 1;
 
-%spinProfile = [0, 100, 120, 140, 160, 180, 200 ; 0, 300, 600, 900, 1200, 1400, 1400]
+spinProfile = [0, 50, 100, 180, 250, 300, 400 ; 0, 350, 700, 1260, 1400, 1400, 1400]
 
-spinProfile = [0, 140, 145, 160, 170, 180, 190, 216, 220, 240, 265, 295, 320, 340, 360, 400, 410, 445, 465, 580, 600, 680, 695, 785, 835, 880, 900, 940, 1130; ... 
-               0, 0, 110, 110,   0,   0, 110, 110,  90, 90, 380, 100, 100, 380, 100, 100, 400, 400, 600, 600, 800, 800, 930, 930, 1270, 1270, 1400, 1400, 0]
-
-%spinProfile = [0,  4,   6,   8,  10,  12,   14,   16,   20 ; ... 
-%               0, 50, 150, 350, 600, 700, 1000, 1200, 1200]
-
+% load("SpinProfile_1.mat")
+% spinProfile = spinProfile_1;
 
 simDuration = spinProfile(1,end);
 
@@ -68,5 +64,5 @@ end
 
 function rpm = get_rpm(t, spin_profile)
     %build spin profile:
-    rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "spline");
+    rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "pchip");
 end
