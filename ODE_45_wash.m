@@ -67,9 +67,8 @@ function dydt= tub_motion(t, y, m, k, c, m_unb, r, spin_profile)
     rpm = get_rpm(t, spin_profile);
     omega = rpm*2*pi/60;
     F0 = m_unb*(omega)^2*r;
-    dydt = zeros(2,1);
-    dydt(1) = y(2);
-    dydt(2) = F0/m*sin(omega*t) - k/m*y(1) - c/m*y(2);
+    dydt = [y(2);F0/m*sin(omega*t) - k/m*y(1) - c/m*y(2)];
+
 end
 
 function rpm = get_rpm(t, spin_profile)
