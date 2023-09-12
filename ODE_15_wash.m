@@ -61,5 +61,5 @@ end
 
 function rpm = get_rpm(t, spin_profile)
     %build spin profile:
-    rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "pchip");
+    rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "linear");
 end
