@@ -1,3 +1,5 @@
+spinProfile_1 = load("SpinProfile_1.mat")
+spinProfile_1 = spinProfile_1.spinProfile;
 spinProfile_2 = zeros(2, length(spinProfile_1)*2-2);
 
 %%  Generate the first row with all the time steps
