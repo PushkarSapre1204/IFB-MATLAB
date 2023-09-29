@@ -6,10 +6,10 @@ r = 0.25;
 
 spinProfileIndex = 1;
 
-spinProfile = [0, 50, 100, 180, 250, 300, 400 ; 0, 350, 700, 1260, 1400, 1400, 1400]
+%spinProfile = [0, 50, 100, 180, 250, 300, 400 ; 0, 350, 700, 1260, 1400, 1400, 1400]
 
-% load("SpinProfile_1.mat")
-% spinProfile = spinProfile_1;
+load("SpinProfiles.mat")
+spinProfile = spinProfiles.split2;
 
 simDuration = spinProfile(1,end);
 
@@ -28,7 +28,7 @@ end
 %% Plotting
 
 %Create a new figure to display tub displacement plot
-tub_amp_plot = figure('Name','Tub_Amp_Plot', 'NumberTitle','off');
+tub_amp_plot = figure('Name','Split 2: Pchip interp');
 
 %Set figure as current figure
 figure(tub_amp_plot)
