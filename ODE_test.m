@@ -54,9 +54,7 @@ function dydt = SHM(t, y, m, k, c, F0, omega_max, t_maxRPM)
     omega = omega_F(t, omega_max, t_maxRPM);
     evalin("base", "itr = itr + 1;");
     
-    dydt = zeros(2,1);
-    dydt(1) = y(2);
-    dydt(2) = F0/m*omega^2*0.25*sin(omega*t) -k/m*y(1) - c/m*y(2);
+    dydt = [y(2); F0/m*omega^2*0.25*sin(omega*t) -k/m*y(1) - c/m*y(2)];
 end 
 
 function omega = omega_F(t, omega_max, t_of_omega_max)
@@ -68,10 +66,10 @@ function omega = omega_F(t, omega_max, t_of_omega_max)
         %disp("Max omega reached");
         omega = omega_max;
     end
-    hold on
-    line = evalin("base", 'RPM_line');
-    addpoints(line, t, omega)
-    drawnow limitrate 
+%     hold on
+%     line = evalin("base", 'RPM_line');
+%     addpoints(line, t, omega)
+%     drawnow limitrate 
     %plot(t, omega, '.', Color=red)
     %pause(0.05)
 end
