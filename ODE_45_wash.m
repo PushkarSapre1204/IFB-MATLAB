@@ -6,9 +6,8 @@ r = 0.25;
 
 spinProfileIndex = 1;
 
-spinProfile = load("SpinProfile_linear.mat");
+spinProfile = [0, 100, 120, 140, 160, 180, 200 ; 0, 300, 600, 900, 1200, 1400, 1400]
 
-spinProfile = spinProfile.spinProfile;
 
 simDuration = spinProfile(1,end);
 
