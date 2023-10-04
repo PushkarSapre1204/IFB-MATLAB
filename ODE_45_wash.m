@@ -6,7 +6,7 @@ r = 0.25;
 
 spinProfileIndex = 1;
 
-%spinProfile = [0, 50, 100, 180, 250, 300, 400 ; 0, 350, 700, 1260, 1400, 1400, 1400]
+spinProfile = [0, 100, 120, 140, 160, 180, 200 ; 0, 300, 600, 900, 1200, 1400, 1400]
 
 load("SpinProfiles.mat")
 spinProfile = spinProfiles.split2;
