@@ -6,15 +6,20 @@ r = 0.25;
 
 spinProfileIndex = 1;
 
-%spinProfile = [0, 100, 120, 140, 160, 180, 200 ; 0, 300, 600, 900, 1200, 1400, 1400]
+spinProfile = [0,       50,      100,  160,  195,  210,  300,  400; 
+               0, 345.4774, 696.9849, 1120, 1330, 1400, 1400, 1400]
 
-load("SpinProfile_linear.mat")
+Akima_spin_profile(spinProfile)
+%load("SpinProfile_linear.mat")
 %spinProfile = spinProfile;
 
 simDuration = spinProfile(1,end);
 
 
 [t, y]= ode45(@(t,y) tub_motion(t, y, m, k, c, m_unb, r, spinProfile), [0,simDuration], [0,0]);
+
+
+%% Post processing
 
 %Create zero array for spin profile
 spin_profile_recreated = zeros(length(t), 1);
@@ -28,7 +33,7 @@ end
 %% Plotting
 
 %Create a new figure to display tub displacement plot
-tub_amp_plot = figure('Name','Split 2: Pchip interp');
+tub_amp_plot = figure('Name','Tub amp');
 
 %Set figure as current figure
 figure(tub_amp_plot)
