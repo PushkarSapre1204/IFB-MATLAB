@@ -6,19 +6,14 @@ r = 0.25;
 
 load("SpinProfile_linear.mat")
 
-spinProfile = [0, 100, 120, 140, 160, 180, 200 ; 0, 300, 600, 900, 1200, 1400, 1400]
 
-load("SpinProfiles.mat")
-spinProfile = spinProfiles.split2;
+%% Solver
+simDuration = spinProfile(1,end);                                                                       %Set sim duration
 
-simDuration = spinProfile(1,end);
+[t, y]= ode45(@(t,y) tub_motion(t, y, m, k, c, m_unb, r, spinProfile), [0,simDuration], [0,0]);         %ODE solver
 
 
-[t, y]= ode45(@(t,y) tub_motion(t, y, m, k, c, m_unb, r, spinProfile), [0,simDuration], [0,0]);
-
-%Create zero array for spin profile
-spin_profile_recreated = zeros(length(t), 1);
-
+%% Post process
 %Generate the spin profile using the time steps output of ODE45
 
 spin_profile_recreated = zeros(length(t), 1);                                                           %Create zero array for spin profile
