@@ -1,5 +1,15 @@
+%This code will add extra points in the delta +- region as given. These
+%additional data points can be used for filleting and smoothening the
+%function
+
+%% ---------NOTE----------%%
+% This code will not generate the filleted profile. It will only provide
+% the points to do so. By using this script, the orignal sharp points are
+% lost. 
+
+
 spinProfile_1 = load("SpinProfile_1.mat")
-spinProfile_1 = spinProfile_1.spinpr 
+spinProfile_1 = spinProfile_1.spinProfile;
 spinProfile_2 = zeros(2, length(spinProfile_1)*2-2);
 
 %%  Generate the first row with all the time steps
