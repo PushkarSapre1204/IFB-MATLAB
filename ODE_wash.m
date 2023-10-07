@@ -1,4 +1,4 @@
-function [t,y,prof] = ODE_wash(sProf, plot)
+function [t,y,prof] = ODE_wash(sProf, Method, Plot)
 
     m = 60;
     k = 9*2;
@@ -28,29 +28,34 @@ function [t,y,prof] = ODE_wash(sProf, plot)
     prof = spin_profile_recreated;
     
     %% Plotting
-    tub_amp_plot = figure('Name', append('Max RPM: ', string(maxRPM)));                                                  %Create a new figure to display tub displacement plot
+    if Plot == 1
+        tub_amp_plot = figure('Name', append('Max RPM: ', string(maxRPM)));                                     %Create a new figure to display tub displacement plot
 
-    figure(tub_amp_plot)                                                                                    %Set figure as current figure
-    tub_amp_plot.Position = [150, 250, 1250, 500];                                                          %Set figure popup location
+        figure(tub_amp_plot)                                                                                    %Set figure as current figure
+        tub_amp_plot.Position = [150, 250, 1250, 500];                                                          %Set figure popup location
 
-    % Time vs Tub displacement
-    subplot(1, 2, 1)                              %Create subplot and set as the current figure
-    plot(t,y(:,1), 'blue');
-    title("Tub displacement w.r.t time")
-    xlabel("Time (s)")
-    ylabel("Tub displacement (m)")
-    xlim([0,simDuration])                         %Set X lim to ensure all data is visible
-    ylim([-0.005, 0.005])
+        % Time vs Tub displacement
+        subplot(1, 2, 1)                              %Create subplot and set as the current figure
+        plot(t,y(:,1), 'blue');
+        title("Tub displacement w.r.t time")
+        xlabel("Time (s)")
+        ylabel("Tub displacement (m)")
+        xlim([0,simDuration])                         %Set X lim to ensure all data is visible
+        ylim([-0.01, 0.01])
 
-    %Plot Time vs RPM. RPM is the regenerated graph
-    subplot(1, 2, 2)
-    plot(t,spin_profile_recreated, 'red');
-    title("R.P.M w.r.t time")
-    xlabel("Time (s)")
-    ylabel("RPM")
-    xlim([0, simDuration])
-    ylim([0, 1600])
-
+        %Plot Time vs RPM. RPM is the regenerated graph
+        subplot(1, 2, 2)
+        plot(t,spin_profile_recreated, 'red');
+        title("R.P.M w.r.t time")
+        xlabel("Time (s)")
+        ylabel("RPM")
+        xlim([0, simDuration])
+        ylim([0, 1600])
+    elseif Plot == 0
+        % Do nothing
+    else
+        disp("Invalid plot option")
+    end
 
     %% Functions
 
@@ -65,7 +70,7 @@ function [t,y,prof] = ODE_wash(sProf, plot)
 
     function rpm = get_rpm(t, spin_profile)
         %build spin profile:
-        rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "pchip");
+        rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, Method);
     end
 
 end
