@@ -21,7 +21,7 @@ spin_profile_recreated = zeros(length(t), 1);                                   
 for i = 1:length(t)
     spin_profile_recreated(i) = get_rpm(t(i), spinProfile);                                             %Compute rpm corresponding to i'th time step
 end
--
+
 %% Plotting                                                  
 tub_amp_plot = figure('Name','Tub amp plot');                                                  %Create a new figure to display tub displacement plot                                                     
 
@@ -30,12 +30,15 @@ tub_amp_plot.Position = [150, 250, 1250, 500];                                  
 
 % Time vs Tub displacement 
 subplot(1, 2, 1)                              %Create subplot and set as the current figure    
-plot(t,y(:,1), 'blue');
+plot(t,y(:,2), 'blue');
+hold on 
+plot(t,y(:,1), 'red');
+hold off
 title("Tub displacement w.r.t time")
 xlabel("Time (s)")                                                                                                                                          
 ylabel("Tub displacement (m)")
 xlim([0,simDuration])                         %Set X lim to ensure all data is visible                                              
-ylim([-0.005, 0.005])
+%ylim([-0.005, 0.005])
 
 %Plot Time vs RPM. RPM is the regenerated graph
 subplot(1, 2, 2)
