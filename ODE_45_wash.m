@@ -21,9 +21,9 @@ spin_profile_recreated = zeros(length(t), 1);                                   
 for i = 1:length(t)
     spin_profile_recreated(i) = get_rpm(t(i), spinProfile);                                             %Compute rpm corresponding to i'th time step
 end
-
+-
 %% Plotting                                                  
-tub_amp_plot = figure('Name','Split 2: Pchip interp');                                                  %Create a new figure to display tub displacement plot                                                     
+tub_amp_plot = figure('Name','Tub amp plot');                                                  %Create a new figure to display tub displacement plot                                                     
 
 figure(tub_amp_plot)                                                                                    %Set figure as current figure
 tub_amp_plot.Position = [150, 250, 1250, 500];                                                          %Set figure popup location
