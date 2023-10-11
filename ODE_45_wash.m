@@ -54,8 +54,36 @@ ylim([0, 1500])
 function dydt= tub_motion(t, y, m, k, c, m_unb, r, spin_profile)
     rpm = get_rpm(t, spin_profile);
     omega = rpm*2*pi/60;
-    F0 = m_unb*(omega)^2*r;
-    dydt = [y(2); F0/m*sin(omega*t) - k/m*y(1) - c/m*y(2)];
+    
+    Theta = y(1);                       % Theta =  drum angle
+    
+    % Unbalance force
+    F0 = m_unb*(omega)^2*r;             % Overall imbalance force
+    Fx = F0*cos(Theta);                 % X component of imbalance force
+    Fy = F0*sin(Theta);                 % Y component of imbalance force
+    
+    % Spring force
+    
+    FsX = k*(DeltaL(Spring(1))*cosAplha(Spring(1)) + DeltaL(Spring(2))*cosAplha(Spring(2)));
+    FsY = k*(DeltaL(1)*sinAplha(1) + DeltaL(2)*sinAplha(2));
+    % Damper force
+
+    
+    % PreDiffArray is the array with values before differentiation. The array values are maintained by Ode solver.
+    % The RHS should provide the value of the LHS derivative. 
+    % Sample y Array = [Theta, TubX, TubY, Damper_lengths]. Damper lengths needed because damper length derivative is required. 
+    % Accordingly, dydt array = ThetaDash, TubXDash, TubYDash, Damper_length_dash
+    
+    % Y array =    [Theta,            TubX,     TubY,     Damper_1_Length,    Damper_2_length,    TubXDash,       TubYDash]
+    % Diff array = [Omega/ Theta_dot, TubXDash, TubYDash, Damper_1_LengthDot, Damper_2_LengthDot, TubXDoubleDash, TubYDoubleDash]                                                
+    dydt(1) = omega;    
+    dydt(2) = y(6); %TubX Dash 
+    dydt(3) = y(7); %TubY Dash 
+    dydt(4) = damperVelocity(1); %L1Dash
+    dydt(5) = damperVelocity(2); %L2Dash
+    dydt(6) = (Fx - FsX - FdX)/ m;    % X DoF equation
+    dydt(7) = (Fy - FsY - FdY) / m;    % Y DoF equation
+
 end
 
 function rpm = get_rpm(t, spin_profile)
