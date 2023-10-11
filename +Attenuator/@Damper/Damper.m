@@ -38,8 +38,10 @@ classdef Damper < Attenuator
             Y2 = obj.MobileNodeY;
             X2_dot = obj.MobileNodeVelX;
             Y2_dot = obj.MobileNodeVelY;
+            
+            v = 1/2* (2*(obj.FixedNode-obj.MobileNode).*obj.MobileNodeVel) / sqrt(sum((obj.FixedNode-obj.MobileNode).^2));
 
-            v = 1/2 * (2*(X0 - X2)*(X2_dot) + 2*(Y0 - Y2)*(Y2_dot))/sqrt((X0 - X2)^2 + (Y0 - Y2)^2);
+            %v = 1/2 * (2*(X0 - X2)*(X2_dot) + 2*(Y0 - Y2)*(Y2_dot))/sqrt((X0 - X2)^2 + (Y0 - Y2)^2);
         end
     end
 
