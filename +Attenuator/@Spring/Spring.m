@@ -14,13 +14,13 @@ classdef Spring < Attenuator
     methods
         function obj = Spring(Args)
             arguments
-                Args.Constant = 0;
+                Args.K = 0;
                 Args.FNode = [0,0];
                 Args.MNode = [0,0];
             end
             obj@Attenuator("FNode", Args.FNode, "MNode", Args.MNode)
-            obj.Constant = Args.Constant;
-            if Args.Constant == 0
+            obj.Constant = Args.K;
+            if Args.K == 0
                 disp("Warning: Force constant is zero!")
             end
         end

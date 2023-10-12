@@ -1,11 +1,12 @@
-classdef Attenuator 
-    properties (Abstract, SetAccess = immutable)
+classdef Attenuator
+    properties (SetAccess = immutable)
         Constant
     end
     properties  (SetAccess = immutable, GetAccess = protected)
-        FixedNode = [0,0];       
+        FixedNode = [0,0];
+        NodeOffset
     end
-    properties  (GetAccess = protected)
+    properties  (Access = protected)
         MobileNode = [0,0];
         MobileNodeVel = [0,0];
     end
@@ -17,6 +18,11 @@ classdef Attenuator
         MobileNodeVelX      % Xm_dot
         MobileNodeVelY      % Ym_dot
     end
+
+    properties ( Dependent)
+        Fx
+        Fy
+    end
     
     %% Methods
     
@@ -24,11 +30,13 @@ classdef Attenuator
     methods                 
         function obj = Attenuator(Args)
             arguments
-                Args.FNode = [0,0];
-                Args.MNode = [0,0];
+                Args.FNode (0,0)
+                Args.MNode (0,0)
+                Args.tubCenter 
             end
             obj.FixedNode = Args.FNode;
             obj.MobileNode = Args.MNode;
+            obj.NodeOffset = obj.MobileNode - Args.tubCenter;
         end
     end
 
@@ -55,22 +63,16 @@ classdef Attenuator
             y = obj.MobileNodeVel(2);
         end
         
+    % Set methods:
         function obj = set.MobileNode(obj, tubCenter)
-            obj.MobileNode = tubCenter + NodeOffset;
-        end
-
-        function obj = set.MobileNodeVelX(obj, VX)
-            obj.MobileNodeVelX = VX;
-        end
-        function obj = set.MobileNodeVelY(obj, VY)
-            obj.MobileNodeVelY = VY;
+            obj.MobileNode = tubCenter; % + obj.NodeOffset;
         end
         
     end
 
-    methods (Abstract)
-        f = Force(obj)
-    end
+%     methods (Abstract)
+%         f = Force(obj)
+%     end
 
 
 end

@@ -5,20 +5,21 @@ classdef Damper < Attenuator
     properties (Dependent)
         DamperVelocity
     end
-
+    
     %% Methods
     
     % Constructors
     methods 
         function obj = Damper(Args)
             arguments
-                Args.Constant = 0;
-                Args.FNode = [0,0];
-                Args.MNode = [0,0]; 
+                Args.C = 0;
+                Args.FNode 
+                Args.MNode 
             end
+            
             obj@Attenuator("FNode", Args.FNode, "MNode", Args.MNode)
-            obj.Constant = Args.Constant;
-            if Args.Constant == 0
+            obj.Constant = Args.C;
+            if Args.C == 0
                 disp("Warning: Force constant is zero!")
             end
         end
@@ -27,7 +28,7 @@ classdef Damper < Attenuator
     % Get Set methods
     methods         
         % Main properties
-        function C = DamperConstant(obj)
+        function C = DamperConstant(obj) % Not used
             C = obj.Constant;
         end
 
@@ -48,7 +49,7 @@ classdef Damper < Attenuator
     % Definition of Attenuator abstract methods
     methods    
         function f = Force(obj)
-            f = obj.Constant*obj.DamperVelocity;
+            f = obj.Constant.*obj.DamperVelocity;
         end
     end
 end
