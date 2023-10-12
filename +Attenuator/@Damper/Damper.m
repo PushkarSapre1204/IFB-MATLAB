@@ -1,4 +1,4 @@
-classdef Damper < Attenuator
+classdef Damper < Attenuator.Attenuator
     properties  (SetAccess = immutable)
         Constant 
     end
@@ -16,12 +16,8 @@ classdef Damper < Attenuator
                 Args.FNode 
                 Args.MNode 
             end
-            
-            obj@Attenuator("FNode", Args.FNode, "MNode", Args.MNode)
+            obj@Attenuator.Attenuator("FNode", Args.FNode, "MNode", Args.MNode)
             obj.Constant = Args.C;
-            if Args.C == 0
-                disp("Warning: Force constant is zero!")
-            end
         end
     end
     

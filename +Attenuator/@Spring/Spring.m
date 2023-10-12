@@ -1,4 +1,4 @@
-classdef Spring < Attenuator
+classdef Spring < Attenuator.Attenuator
     properties (SetAccess = immutable)
         Constant
     end
@@ -18,7 +18,7 @@ classdef Spring < Attenuator
                 Args.FNode = [0,0];
                 Args.MNode = [0,0];
             end
-            obj@Attenuator("FNode", Args.FNode, "MNode", Args.MNode)
+            obj@Attenuator.Attenuator("FNode", Args.FNode, "MNode", Args.MNode)
             obj.Constant = Args.K;
             if Args.K == 0
                 disp("Warning: Force constant is zero!")
