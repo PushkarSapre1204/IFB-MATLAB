@@ -12,18 +12,17 @@ classdef Spring < Attenuator.Attenuator
     
     % Constructor
     methods
-        function obj = Spring(Args)
-            arguments
-                Args.K = 0;
-                Args.FNode = [0,0];
-                Args.MNode = [0,0];
-            end
-            obj@Attenuator.Attenuator("FNode", Args.FNode, "MNode", Args.MNode)
-            obj.Constant = Args.K;
-            if Args.K == 0
-                disp("Warning: Force constant is zero!")
-            end
-        end
+%         function obj = Spring(Args)
+%             arguments
+%                 Args.K
+%                 Args.FNode
+%                 Args.MNode
+%             end
+%             obj@Attenuator.Attenuator("K", Args.K, "FNode", Args.FNode, "MNode", Args.MNode)
+%             if Args.K == 0
+%                 disp("Warning: Force constant is zero!")
+%             end
+%         end
 
         function f = Force(obj)
             f = obj.Constant*obj.Compression;
