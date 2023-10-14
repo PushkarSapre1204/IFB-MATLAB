@@ -1,16 +1,17 @@
 classdef Attenuator
-    properties (SetAccess = immutable)
-        Constant
+    properties (Abstract, SetAccess = immutable)
+        Constant {mustBeNonmissing}
     end
     properties  (SetAccess = immutable, GetAccess = protected)
-        FixedNode = [0,0];
+        FixedNode 
         NodeOffset
     end
     properties  (Access = protected)
-        MobileNode = [0,0];
+        MobileNode  {mustBeNonmissing}
         MobileNodeVel = [0,0];
     end
     properties (Dependent)
+        %MobileNode  {mustBeNonmissing}
         FixedNodeX          % Xf
         FixedNodeY          % Yf
         MobileNodeX         % Xm
@@ -30,8 +31,8 @@ classdef Attenuator
     methods                 
         function obj = Attenuator(Args)
             arguments
-                Args.FNode (0,0)
-                Args.MNode (0,0)
+                Args.FNode (1,2)
+                Args.MNode (1,2)
                 Args.tubCenter 
             end
             obj.FixedNode = Args.FNode;
@@ -63,16 +64,18 @@ classdef Attenuator
             y = obj.MobileNodeVel(2);
         end
         
-    % Set methods:
-        function obj = set.MobileNode(obj, tubCenter)
-            obj.MobileNode = tubCenter; % + obj.NodeOffset;
+    % Main methods
+
+    function obj = update(obj, tubDisplacement, tubVel)         % Get the new tub velocity and displacement. Update self velocities accordingly.
+            obj.MobileNode = obj.MobileNode + tubDisplacement;
+            obj.MobileNodeVel = tubVel;
         end
-        
+            
     end
 
-%     methods (Abstract)
-%         f = Force(obj)
-%     end
+    methods (Abstract)
+        f = Force(obj)
+    end
 
 
 end
