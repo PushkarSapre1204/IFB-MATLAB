@@ -1,4 +1,4 @@
-classdef SuperClass
+classdef SuperClass<handle
     properties
         a
     end
