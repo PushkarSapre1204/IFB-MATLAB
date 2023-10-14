@@ -51,7 +51,7 @@ ylim([0, 1500])
 
 % Input to ODE45
 % System setup
-function dydt= tub_motion(t, y, m, k, c, m_unb, r, spin_profile)
+function dydt= tub_motion(t, y, m, m_unb, r, spin_profile)
     rpm = get_rpm(t, spin_profile);
     omega = rpm*2*pi/60;
     
@@ -61,13 +61,13 @@ function dydt= tub_motion(t, y, m, k, c, m_unb, r, spin_profile)
     F0 = m_unb*(omega)^2*r;             % Overall imbalance force
     Fx = F0*cos(Theta);                 % X component of imbalance force
     Fy = F0*sin(Theta);                 % Y component of imbalance force
+    FImbalance = [Fx, Fy];
     
     % Spring force
-    
-    FsX = k*(DeltaL(Spring(1))*cosAplha(Spring(1)) + DeltaL(Spring(2))*cosAplha(Spring(2)));
-    FsY = k*(DeltaL(1)*sinAplha(1) + DeltaL(2)*sinAplha(2));
+    SpringForce = Force(Attenuators.Springs);       %Force output is a vector so directly assignable
     % Damper force
-
+    DamperForce = Force(Attenuators.Dampers);
+    
     
     % PreDiffArray is the array with values before differentiation. The array values are maintained by Ode solver.
     % The RHS should provide the value of the LHS derivative. 
@@ -81,6 +81,7 @@ function dydt= tub_motion(t, y, m, k, c, m_unb, r, spin_profile)
     dydt(3) = y(7); %TubY Dash 
     dydt(4) = damperVelocity(1); %L1Dash
     dydt(5) = damperVelocity(2); %L2Dash
+    dydt(6:7) = (FImbalance - SpringForce - DamperForce)/m
     dydt(6) = (Fx - FsX - FdX)/ m;    % X DoF equation
     dydt(7) = (Fy - FsY - FdY) / m;    % Y DoF equation
 
