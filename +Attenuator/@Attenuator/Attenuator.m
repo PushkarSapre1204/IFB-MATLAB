@@ -1,4 +1,4 @@
-classdef Attenuator
+classdef Attenuator < handle
     properties (Abstract, SetAccess = immutable)
         Constant {mustBeNonmissing}
     end
@@ -41,7 +41,7 @@ classdef Attenuator
         end
     end
 
-    % Get set methods
+    % Get methods
     methods     
         function x = get.FixedNodeX(obj)
             x = obj.FixedNode(1);
