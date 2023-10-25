@@ -1,18 +1,18 @@
-k = 18;
-m = 40;
-c = 240 ;
-F0 = 0.5;
-tmax_rpm = 250; 
-omega_max = 1400*2*pi/60;
-%omega_profile = [0, 1];
+import Attenuator.*
+
+Washer.Spring = {Spring("FNode", 0, "MNode", 0.1, "tubCenter", 0.1, "K", 1, "L0", 1)};
+Washer.Damper = {Damper("FNode", 0, "MNode", 0.1, "tubCenter", 0.1, "C", 1)};
+
 simDuration = [0, 400];
 y0 = [0, 0];
-itr = 0;
 
+%%
 % Create figure for ive RPM plotting
 Live_RPM = figure("Name", "Live_RPM", 'NumberTitle','off');
 figure(Live_RPM)
 RPM_line = animatedline;
+
+%% Solve
 
 % Solve the system. Store the amplitude and timesteps in a vector
 [t,y] = ode45(@(t,y) SHM(t, y, m, k, c, F0, omega_max, tmax_rpm), simDuration, y0);
@@ -50,11 +50,8 @@ ylim([0, round(omega_max/10)*10+10])
 
 %% Functions
 
-function dydt = SHM(t, y, m, k, c, F0, omega_max, t_maxRPM)
-    omega = omega_F(t, omega_max, t_maxRPM);
-    evalin("base", "itr = itr + 1;");
-    
-    dydt = [y(2); F0/m*omega^2*0.25*sin(omega*t) -k/m*y(1) - c/m*y(2)];
+function dydt = SHM(t, y)
+    System.S    
 end 
 
 function omega = omega_F(t, omega_max, t_of_omega_max)
