@@ -12,10 +12,10 @@ classdef Damper < Attenuator.Attenuator
     methods 
         function obj = Damper(Args)
             arguments
-                Args.C
-                Args.FNode 
-                Args.MNode
-                Args.tubCenter
+                Args.C %= 10
+                Args.FNode %= [0,0]
+                Args.MNode %= [0.01, 0]
+                Args.tubCenter %= [0.01,0]
             end
             obj@Attenuator.Attenuator("FNode", Args.FNode, "MNode", Args.MNode, "tubCenter", Args.tubCenter)
             if Args.C == 0
@@ -25,7 +25,6 @@ classdef Damper < Attenuator.Attenuator
         end
     end
     
-    % Get Set methods
     methods         
         % Main properties
         function C = DamperConstant(obj) % Not used
@@ -33,15 +32,7 @@ classdef Damper < Attenuator.Attenuator
         end
 
         function v = get.DamperVelocity(obj)
-%             X0 = obj.FixedNodeX;
-%             Y0 = obj.FixedNodeY;
-%             X2 = obj.MobileNodeX;
-%             Y2 = obj.MobileNodeY;
-%             X2_dot = obj.MobileNodeVelX;
-%             Y2_dot = obj.MobileNodeVelY;
-%             v = 1/2 * (2*(X0 - X2)*(X2_dot) + 2*(Y0 - Y2)*(Y2_dot))/sqrt((X0 - X2)^2 + (Y0 - Y2)^2);
-            v = 1/2* (2*(obj.FixedNode-obj.MobileNode).*obj.MobileNodeVel) / sqrt(sum((obj.FixedNode-obj.MobileNode).^2));
-        
+            v = ((obj.FixedNode-obj.MobileNode).*-1.*obj.MobileNodeVel) / sqrt(sum((obj.FixedNode-obj.MobileNode).^2));      
         end
     end
 

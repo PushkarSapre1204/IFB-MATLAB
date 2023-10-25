@@ -6,9 +6,9 @@ classdef Attenuator < handle
         FixedNode 
         NodeOffset
     end
-    properties  (Access = protected)
+    properties  %(Access = protected)
         MobileNode  {mustBeNonmissing}
-        MobileNodeVel = [0,0];
+        MobileNodeVel 
     end
     properties (Dependent)
         %MobileNode  {mustBeNonmissing}
@@ -20,7 +20,7 @@ classdef Attenuator < handle
         MobileNodeVelY      % Ym_dot
     end
 
-    properties ( Dependent)
+    properties (Dependent)
         Fx
         Fy
     end
@@ -66,8 +66,8 @@ classdef Attenuator < handle
         
     % Main methods
 
-    function obj = update(obj, tubDisplacement, tubVel)         % Get the new tub velocity and displacement. Update self velocities accordingly.
-            obj.MobileNode = obj.MobileNode + tubDisplacement;
+    function obj = Update(obj, NewTubLocation, tubVel)         % Get the new tub velocity and displacement. Update self velocities accordingly.
+            obj.MobileNode = NewTubLocation;
             obj.MobileNodeVel = tubVel;
         end
             
