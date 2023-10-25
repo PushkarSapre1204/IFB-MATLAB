@@ -52,21 +52,21 @@ ylim([0, 1500])
 % Input to ODE45
 % System setup
 function dydt= tub_motion(t, y, m, m_unb, r, spin_profile)
-    rpm = get_rpm(t, spin_profile);
-    omega = rpm*2*pi/60;
     
-    Theta = y(1);                       % Theta =  drum angle
+    rpm = get_rpm(t, spin_profile);
+    Omega = rpm*2*pi/60;
+    
+    Theta = y(1);                                   % Theta =  drum angle. Initialised in ODE45
     
     % Unbalance force
-    F0 = m_unb*(omega)^2*r;             % Overall imbalance force
-    Fx = F0*cos(Theta);                 % X component of imbalance force
-    Fy = F0*sin(Theta);                 % Y component of imbalance force
-    FImbalance = [Fx, Fy];
+    F0 = m_unb*(Omega)^2*r;                         % Calculate force due to imbalance mass
+    FImbalance = [F0*cos(Theta), F0*sin(Theta)];    % Compute imbalance force vector
     
     % Spring force
-    SpringForce = Force(Attenuators.Springs);       %Force output is a vector so directly assignable
+    SpringForce = Force(Washer.Springs);        % Force output is a vector so directly assignable
+    
     % Damper force
-    DamperForce = Force(Attenuators.Dampers);
+    DamperForce = Force(Washer.Dampers);        % Force output is a vector so directly assignable
     
     
     % PreDiffArray is the array with values before differentiation. The array values are maintained by Ode solver.
@@ -74,16 +74,15 @@ function dydt= tub_motion(t, y, m, m_unb, r, spin_profile)
     % Sample y Array = [Theta, TubX, TubY, Damper_lengths]. Damper lengths needed because damper length derivative is required. 
     % Accordingly, dydt array = ThetaDash, TubXDash, TubYDash, Damper_length_dash
     
-    % Y array =    [Theta,            TubX,     TubY,     Damper_1_Length,    Damper_2_length,    TubXDash,       TubYDash]
-    % Diff array = [Omega/ Theta_dot, TubXDash, TubYDash, Damper_1_LengthDot, Damper_2_LengthDot, TubXDoubleDash, TubYDoubleDash]                                                
-    dydt(1) = omega;    
-    dydt(2) = y(6); %TubX Dash 
-    dydt(3) = y(7); %TubY Dash 
-    dydt(4) = damperVelocity(1); %L1Dash
-    dydt(5) = damperVelocity(2); %L2Dash
-    dydt(6:7) = (FImbalance - SpringForce - DamperForce)/m
-    dydt(6) = (Fx - FsX - FdX)/ m;    % X DoF equation
-    dydt(7) = (Fy - FsY - FdY) / m;    % Y DoF equation
+    % Y array =    [Theta,            TubX,     TubY,     TubXDash,       TubYDash]
+    % Diff array = [Omega/ Theta_dot, TubXDash, TubYDash, TubXDoubleDash, TubYDoubleDash]                                                
+  
+    dydt(1) = Omega;    % Omega defined above                                 
+    dydt(2) = y(4); %TubX Dash 
+    dydt(3) = y(5); %TubY Dash 
+    dydt(4:5) = (FImbalance - SpringForce - DamperForce)/m;
+%     dydt(6) = (Fx - FsX - FdX)/ m;    % X DoF equation
+%     dydt(7) = (Fy - FsY - FdY) / m;    % Y DoF equation
 
 end
 
