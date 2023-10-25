@@ -1,4 +1,5 @@
-function dydt = Washer_2DOF(t, y, AttenCellArr)
+function dydt = Washer_2DOF(t, y, System)
+    
     
     
     % Y array =    [Theta,            TubX,     TubY,     Damper_1_Length,    Damper_2_length,    TubXDash,       TubYDash]

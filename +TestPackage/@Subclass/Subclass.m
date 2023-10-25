@@ -7,5 +7,11 @@ classdef Subclass < TestPackage.SuperClass
         function obj = Subclass(In)
             obj.b = In;
         end
+
+        function TestFunction0(obj)
+            obj.a = obj.b/2;
+        end
     end
+
+    
 end
