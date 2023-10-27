@@ -2,7 +2,7 @@ classdef Attenuator < handle
     properties (Abstract, SetAccess = immutable)
         Constant {mustBeNonmissing}
     end
-    properties  (SetAccess = immutable, GetAccess = protected)
+    properties  (SetAccess = immutable) %, GetAccess = protected)
         FixedNode 
         NodeOffset
     end
@@ -67,7 +67,7 @@ classdef Attenuator < handle
     % Main methods
 
     function obj = Update(obj, NewTubLocation, tubVel)         % Get the new tub velocity and displacement. Update self velocities accordingly.
-            obj.MobileNode = NewTubLocation;
+            obj.MobileNode = NewTubLocation + obj.NodeOffset;
             obj.MobileNodeVel = tubVel;
         end
             

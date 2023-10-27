@@ -12,6 +12,5 @@ classdef Subclass < TestPackage.SuperClass
             obj.a = obj.b/2;
         end
     end
-
-    
+ 
 end
