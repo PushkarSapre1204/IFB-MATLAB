@@ -5,7 +5,7 @@ Washer.Dampers = {Damper("FNode", [0,0], "MNode", [1,0], "tubCenter", [1.2,0], "
 
 M = 1;
 
-simDuration = [0, 160];
+simDuration = [0, 400];
 y0 = [1, 0, 0, 0];
 
 % Y array =    [TubX, TubY, TubXDash, TubYDash]
@@ -22,28 +22,41 @@ y0 = [1, 0, 0, 0];
 time = linspace(0, simDuration(2) , simDuration(2)*10);         %Create additional time vector
 out = zeros([simDuration(2)*10, 1]);                            %Calculate and store the output in a new vector
 
+NSprings = length(Washer.Springs);
+NDampers = length(Washer.Dampers);
 for i  = 1:length(t)
-    
+    cellfun(@(Att) Att.Update(y(i, 1:2), y(i, 3:4)), Washer.Springs);
+    cellfun(@(Att) Att.Update(y(i, 1:2), y(i, 3:4)), Washer.Dampers); 
+    SpringForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Springs, 'UniformOutput', false)), 1)
+    DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1)
+    y(i, 5:6) = SpringForce;
+    y(i, 7:8) = DamperForce;
 end
 
 %% Plotting
 %Plot the result of solver
-tub_amp_plot = figure('Name','Tub_Amp_Plot', 'NumberTitle','off');
-figure(tub_amp_plot);
-tub_amp_plot.Position = [100, 250, 1250, 500];
+Output = figure('Name','Output', 'NumberTitle','off');
+figure(Output);
+Output.Position = [10, 375, 1500, 400];
 
 subplot(1, 2, 1)
-plot(t, y(:, 1))
-title("Disp (x)")
-xlim([0, simDuration(2)])
+plot(t, y(:, 1:2))
+legend('Tub X', 'Tub Y')
+title("Tub Center")
+%xlim([0, simDuration(2)])
 %ylim([-0.025, 0.025])
 
 subplot(1, 2, 2)
-%plot(t, y(:, 2))
-plot(time, out)
-title("Omega(t)")
-xlim([0, simDuration(2)])
-ylim([0, round(omega_max/10)*10+10])
+plot(t, y(:, 3:4))
+title("Tub Velocity")
+legend('Tub Vel X', 'Tub Vel Y')
+%xlim([0, simDuration(2)])
+%ylim([0, round(omega_max/10)*10+10])
+
+ForceOut = figure("Name", "Force output", NumberTitle="off");
+figure(ForceOut)
+plot(t, y(:, 5:6))
+legend('Spring Fx', 'Spring Fy')
 
 
 %% Functions
@@ -58,7 +71,7 @@ function dydt = SHM(t, y, M, Washer)
     dydt(1:2,1) = y(3:4);
     dydt(3:4,1) = (- SpringForce - DamperForce)/M;
 
-    SolveOut = ["t =", num2str(t), "y = ", num2str(transpose(y))];
-    disp(SolveOut)
+    %SolveOut = ["t =", num2str(t), "y = ", num2str(transpose(y))];
+    %disp(SolveOut)
 end 
 
