@@ -5,15 +5,10 @@ Washer.Dampers = {Damper("FNode", [0,0], "MNode", [1,0], "tubCenter", [1.2,0], "
 
 M = 1;
 
-simDuration = [0, 200];
+simDuration = [0, 160];
 y0 = [1, 0, 0, 0];
 
 % Y array =    [TubX, TubY, TubXDash, TubYDash]
-%%
-% Create figure for ive RPM plotting
-% Live_RPM = figure("Name", "Live_RPM", 'NumberTitle','off');
-% figure(Live_RPM)
-% RPM_line = animatedline;
 
 %% Solve
 
@@ -27,8 +22,8 @@ y0 = [1, 0, 0, 0];
 time = linspace(0, simDuration(2) , simDuration(2)*10);         %Create additional time vector
 out = zeros([simDuration(2)*10, 1]);                            %Calculate and store the output in a new vector
 
-for i  = 1:simDuration(2)*10
-    out(i) = omega_F(i/10, omega_max, tmax_rpm);
+for i  = 1:length(t)
+    
 end
 
 %% Plotting
@@ -55,10 +50,10 @@ ylim([0, round(omega_max/10)*10+10])
 
 function dydt = SHM(t, y, M, Washer)
     cellfun(@(Att) Att.Update(transpose(y(1:2)), transpose(y(3:4))), Washer.Springs);
-    %cellfun(@(Att) Att.Update(transpose(y(1:2)), transpose(y(3:4))), Washer.Dampers);
+    cellfun(@(Att) Att.Update(transpose(y(1:2)), transpose(y(3:4))), Washer.Dampers);
     SpringForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Springs, 'UniformOutput', false)), 1);  % Uniform output used to get cell array as return
-    %DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1); % Uniform output used to get cell array as return
-    DamperForce = 0;
+    DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1); % Uniform output used to get cell array as return
+    
     % Diff array = [TubXDash, TubYDash, TubXDoubleDash, TubYDoubleDash]
     dydt(1:2,1) = y(3:4);
     dydt(3:4,1) = (- SpringForce - DamperForce)/M;
@@ -67,19 +62,3 @@ function dydt = SHM(t, y, M, Washer)
     disp(SolveOut)
 end 
 
-function omega = omega_F(t, omega_max, t_of_omega_max)
-    disp("t input to omega() = ")
-    disp(t)
-    if t < t_of_omega_max
-        omega = omega_max/t_of_omega_max*t;
-    else
-        %disp("Max omega reached");
-        omega = omega_max;
-    end
-%     hold on
-%     line = evalin("base", 'RPM_line');
-%     addpoints(line, t, omega)
-%     drawnow limitrate 
-    %plot(t, omega, '.', Color=red)
-    %pause(0.05)
-end
