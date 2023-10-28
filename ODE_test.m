@@ -1,12 +1,12 @@
 import Attenuator.*
 
-Washer.Springs = {Spring("FNode", [1,0], "MNode", [0.5,0], "tubCenter", [0,0], "K", 1, "L0", 1)};
-Washer.Dampers = {Damper("FNode", [1,0], "MNode", [0.5,0], "tubCenter", [0,0], "C", 0)};
+Washer.Springs = {Spring("FNode", [1,1], "MNode", [0.5,0.5], "tubCenter", [0,0], "K", 1, "L0", 0.7071)};
+Washer.Dampers = {Damper("FNode", [1,1], "MNode", [0.5,0.5], "tubCenter", [0,0], "C", 0)};
 
 M = 1;
 
-simDuration = [0, 400];
-y0 = [0.1, 0, 0, 0];
+simDuration = [0, 100];
+y0 = [0.1, 0.1, 0, 0];
 
 % Y array =    [TubX, TubY, TubXDash, TubYDash]
 
@@ -22,13 +22,16 @@ y0 = [0.1, 0, 0, 0];
 time = linspace(0, simDuration(2) , simDuration(2)*10);         %Create additional time vector
 out = zeros([simDuration(2)*10, 1]);                            %Calculate and store the output in a new vector
 
+NSprings = length(Washer.Springs);
+NDampers = length(Washer.Dampers);
+
 for i  = 1:length(t)
     cellfun(@(Att) Att.Update(y(i, 1:2), y(i, 3:4)), Washer.Springs);
     cellfun(@(Att) Att.Update(y(i, 1:2), y(i, 3:4)), Washer.Dampers); 
     SpringForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Springs, 'UniformOutput', false)), 1);
     DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1);
-    y(i, 5:6) = SpringForce;
-    y(i, 7:8) = DamperForce;
+    y(i, 5:5+NSprings) = SpringForce;
+    y(i, 6+NSprings:6+NSprings+NDampers) = DamperForce;
 end
 
 %% Plotting
@@ -62,8 +65,8 @@ legend('Spring Fx', 'Spring Fy')
 function dydt = SHM(t, y, M, Washer)
     cellfun(@(Att) Att.Update(transpose(y(1:2)), transpose(y(3:4))), Washer.Springs);
     cellfun(@(Att) Att.Update(transpose(y(1:2)), transpose(y(3:4))), Washer.Dampers);
-    SpringForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Springs, 'UniformOutput', false)), 1);  % Uniform output used to get cell array as return
-    DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1); % Uniform output used to get cell array as return
+    SpringForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Springs, 'UniformOutput', false)), 1) % Uniform output used to get cell array as return
+    DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1) % Uniform output used to get cell array as return
     
     % Diff array = [TubXDash, TubYDash, TubXDoubleDash, TubYDoubleDash]
     dydt(1:2,1) = y(3:4);
