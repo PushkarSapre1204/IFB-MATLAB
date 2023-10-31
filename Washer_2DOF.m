@@ -1,15 +1,21 @@
-function dydt = Washer_2DOF(t, y, System)
+function dydt = Washer_2DOF(t, y, Washer, SProf)
     
+    Omega = 2*pi/60*get_rpm(t, SProf);
+    Theta = Omega*t;
+
+    F_Unb = Washer.Mass * Washer.Radius.^2 * Omega;
+    F_Unb = [F_Unb*cos(Theta), F_Unb*sin(Theta)];
     
+    % Update all 
+    cellfun(@(Att) Att.Update(transpose(y(1:2)), transpose(y(3:4))), Washer.Springs);           
+    cellfun(@(Att) Att.Update(transpose(y(1:2)), transpose(y(3:4))), Washer.Dampers);
     
-    % Y array =    [Theta,            TubX,     TubY,     Damper_1_Length,    Damper_2_length,    TubXDash,       TubYDash]
-    % Diff array = [Omega/ Theta_dot, TubXDash, TubYDash, Damper_1_LengthDot, Damper_2_LengthDot, TubXDoubleDash, TubYDoubleDash]                                                
+    SpringForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Springs, 'UniformOutput', false)), 1) % Uniform output used to get cell array as return
+    DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1) % Uniform output used to get cell array as return
     
-    dydt(1) = omega;    
-    dydt(2) = y(6); %TubX Dash 
-    dydt(3) = y(7); %TubY Dash 
-    dydt(4) = damperVelocity(1); %L1Dash
-    dydt(5) = damperVelocity(2); %L2Dash
-    dydt(6) = (Fx - FsX - FdX)/ m;    % X DoF equation
-    dydt(7) = (Fy - FsY - FdY) / m;    % Y DoF equation
+    % Diff array = [TubXDash, TubYDash, TubXDoubleDash, TubYDoubleDash, Omega]
+    dydt(1:2,1) = y(3:4);
+    dydt(3:4,1) = (F_Unb - SpringForce - DamperForce)/Washer.Mass;
+    dydt(5, 1) = Omega;
 end
+
