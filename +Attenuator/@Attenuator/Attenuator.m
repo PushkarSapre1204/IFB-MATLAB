@@ -2,27 +2,13 @@ classdef Attenuator < handle
     properties (Abstract, SetAccess = immutable)
         Constant {mustBeNonmissing, mustBeNonnegative}
     end
-    properties  (SetAccess = immutable) %, GetAccess = protected)
+    properties  (SetAccess = immutable, GetAccess = protected)
         FixedNode 
         NodeOffset 
     end
-    properties  %(Access = protected)
+    properties  (Access = protected)
         MobileNode  {mustBeNonmissing}
         MobileNodeVel 
-    end
-    properties (Dependent)
-        %MobileNode  {mustBeNonmissing}
-        FixedNodeX          % Xf
-        FixedNodeY          % Yf
-        MobileNodeX         % Xm
-        MobileNodeY         % Ym 
-        MobileNodeVelX      % Xm_dot
-        MobileNodeVelY      % Ym_dot
-    end
-
-    properties (Dependent)
-        Fx
-        Fy
     end
     
     %% Methods
@@ -42,26 +28,25 @@ classdef Attenuator < handle
     end
 
     % Get methods
-    methods     
-        function x = get.FixedNodeX(obj)
-            x = obj.FixedNode(1);
-        end
-        function y = get.FixedNodeY(obj)
-            y = obj.FixedNode(2);
+    methods
+        function C = getConstant(obj)
+            C = obj.Constant;
         end
 
-        function x = get.MobileNodeX(obj)
-            x = obj.MobileNode(1);
-        end
-        function y = get.MobileNodeY(obj)
-            y = obj.MobileNode(2);
+        function fN = getFixedNode(obj)
+            fN = obj.FixedNode;
         end
 
-        function x = get.MobileNodeVelX(obj)
-            x = obj.MobileNodeVel(1);
+        function nOff = getNodeOffset(obj)
+            nOff = obj.NodeOffset;
+        end    
+
+        function MN = getMobileNode(obj)
+            MN = obj.MobileNode;
         end
-        function y = get.MobileNodeVelY(obj)
-            y = obj.MobileNodeVel(2);
+
+        function MNV = getMobileNodeVel(obj)
+            MNV = obj.MobileNodeVel;
         end
         
     % Main methods
