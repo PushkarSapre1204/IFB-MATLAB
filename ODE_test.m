@@ -1,12 +1,12 @@
 import Attenuator.*
 
-Washer.Springs = {Spring("FNode", [1,1], "MNode", [0.5,0.5], "tubCenter", [0,0], "K", 1, "L0", 0.7071)};
-Washer.Dampers = {Damper("FNode", [1,1], "MNode", [0.5,0.5], "tubCenter", [0,0], "C", 0)};
+Washer.Springs(1,1) = {Spring("FNode", [1,1], "MNode", [0.5,0.5], "tubCenter", [0,0], "K", 1, "L0", 0.7071)};
+Washer.Dampers = {Damper("FNode", [1,1], "MNode", [0.5,0.5], "tubCenter", [0,0], "C", 0.1)};
 
 M = 1;
 
 simDuration = [0, 100];
-y0 = [0.1, 0.1, 0, 0];
+y0 = [0.1, 0.2, 0, 0];
 
 % Y array =    [TubX, TubY, TubXDash, TubYDash]
 
@@ -26,6 +26,7 @@ NSprings = length(Washer.Springs);
 NDampers = length(Washer.Dampers);
 
 for i  = 1:length(t)
+    % Update attenuators to next step 
     cellfun(@(Att) Att.Update(y(i, 1:2), y(i, 3:4)), Washer.Springs);
     cellfun(@(Att) Att.Update(y(i, 1:2), y(i, 3:4)), Washer.Dampers); 
     SpringForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Springs, 'UniformOutput', false)), 1);
