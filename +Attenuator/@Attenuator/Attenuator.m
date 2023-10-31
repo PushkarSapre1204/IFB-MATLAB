@@ -1,10 +1,10 @@
 classdef Attenuator < handle
     properties (Abstract, SetAccess = immutable)
-        Constant {mustBeNonmissing}
+        Constant {mustBeNonmissing, mustBeNonnegative}
     end
     properties  (SetAccess = immutable) %, GetAccess = protected)
         FixedNode 
-        NodeOffset
+        NodeOffset 
     end
     properties  %(Access = protected)
         MobileNode  {mustBeNonmissing}

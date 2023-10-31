@@ -1,7 +1,7 @@
 classdef Spring < Attenuator.Attenuator
     properties (SetAccess = immutable)
         Constant
-        L0
+        L0 {mustBeNonnegative}
     end
     
     properties (Dependent)
