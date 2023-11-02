@@ -32,7 +32,9 @@ classdef Damper < Attenuator.Attenuator
         end
 
         function v = get.DamperVelocity(obj)
-            v = ((obj.FixedNode-obj.MobileNode).*obj.MobileNodeVel) / sqrt(sum((obj.FixedNode-obj.MobileNode).^2));      
+            %v = ((obj.FixedNode-obj.MobileNode).*obj.MobileNodeVel) / sqrt(sum((obj.FixedNode-obj.MobileNode).^2));
+            Dir = obj.FixedNode-obj.MobileNode;
+            v = dot(obj.MobileNodeVel,  Dir)*Dir/norm(Dir);
         end
     end
 
