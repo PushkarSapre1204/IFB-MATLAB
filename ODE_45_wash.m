@@ -9,7 +9,8 @@ spinProfile = spinProfile.spinProfile;
 InitCond = [0, 0, 0, 0, 0];
 
 %% Solver
-simDuration = spinProfile(1,end);                                                %Set sim duration
+%simDuration = spinProfile(1,end);                                                %Set sim duration
+simDuration = 100;
 
 [t, y]= ode45(@(t,y) Washer_2DOF(t, y, Washer, spinProfile), [0,simDuration], InitCond);         %ODE solver
 
@@ -28,8 +29,8 @@ ReSolve = zeros(length(y), 4);
 
 LTub = figure("Name", "Live Tub");
 figure(LTub)
-xlim([-280*10^-3, 280*10^-3])
-ylim([-430*10^-3, 335*10^-3])
+%xlim([-280*10^-3, 280*10^-3])
+%ylim([-430*10^-3, 335*10^-3])
 hold on
 
 % Display spring nodes
