@@ -3,7 +3,7 @@ function dydt = Washer_2DOF(t, y, Washer, SProf)
     Omega = 2*pi/60*get_rpm(t, SProf);
     Theta = y(5);
 
-    F_Unb = Washer.UnbMass * Washer.Radius.^2 * Omega;
+    F_Unb = Washer.UnbMass * Washer.Radius * Omega.^2;
     F_Unb = [F_Unb*cos(Theta), F_Unb*sin(Theta)];
   
     %F_Unb = 0;
