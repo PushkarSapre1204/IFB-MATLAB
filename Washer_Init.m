@@ -27,8 +27,6 @@ Washer.Dampers(2,1) = {Damper("FNode", [ 263.20*10^-3, -422.6*10^-3], "MNode", [
 %  Washer.Dampers(1,1) = {Damper("FNode", [0, 0], "MNode", [0.5, 0], "tubCenter", [1, 0], "C", 2)};
 % % Washer.Dampers(2,1) = {Damper("FNode", [2, 0], "MNode", [1.5, 0], "tubCenter", [1, 0], "C", 2)};
 
-
-
-
+clear TC
 
 
