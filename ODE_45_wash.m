@@ -3,14 +3,14 @@ clear
 %% 
 Washer_Init
 
-spinProfile = load("SpinProfile_linear.mat");
-spinProfile = spinProfile.spinProfile;
+load("SpinProfiles.mat");
+spinProfile = spinProfiles.Actual.Base;
 
-InitCond = [0, 0, 0, 0, 0];
+InitCond = [0, 0.0329, 0, 0, 0];
 
 %% Solver
-%simDuration = spinProfile(1,end);                                                %Set sim duration
-simDuration = 100;
+simDuration = spinProfile(1,end);                                                %Set sim duration
+%simDuration = 100;
 
 [t, y]= ode45(@(t,y) Washer_2DOF(t, y, Washer, spinProfile), [0,simDuration], InitCond);         %ODE solver
 
@@ -18,14 +18,14 @@ simDuration = 100;
 %% Post process
 %Generate the spin profile using the time steps output of ODE45
 
-spin_profile_recreated = zeros(length(t), 1);                                                           %Create zero array for spin profile
-
-for i = 1:length(t)
-    spin_profile_recreated(i) = get_rpm(t(i), spinProfile);                                             %Compute rpm corresponding to i'th time step
-end
+% spin_profile_recreated = zeros(length(t), 1);                                                           %Create zero array for spin profile
+% 
+% for i = 1:length(t)
+%     spin_profile_recreated(i) = get_rpm(t(i), spinProfile);                                             %Compute rpm corresponding to i'th time step
+% end
 
 % Make machine structure
-ReSolve = zeros(length(y), 4);
+ReSolve = zeros(length(y), 7);
 
 LTub = figure("Name", "Live Tub");
 figure(LTub)
@@ -53,7 +53,7 @@ for i  = 1:length(t)
     Omega = 2*pi/60*RPM;
     Theta = y(i, 5);
 
-    F_Unb = Washer.UnbMass * Washer.Radius.^2 * Omega;
+    F_Unb = Washer.UnbMass * Washer.Radius * Omega.^2;
 
     cellfun(@(Att) Att.Update(y(i, 1:2), y(i, 3:4)), Washer.Springs);
     cellfun(@(Att) Att.Update(y(i, 1:2), y(i, 3:4)), Washer.Dampers); 
@@ -106,8 +106,6 @@ legend('Spring Fx', 'Spring Fy')
 subplot(1,2,2)
 plot(t, ReSolve(:, 3:4))
 title(("Damper Force"))
-
-
 legend('Damper Fx', 'Damper Fy')
 
 % RPM and Omega
@@ -126,8 +124,8 @@ legend("Force X", "Force Y")
 
 %% Functions
 
-function rpm = get_rpm(t, spin_profile)
-    %build spin profile:
-    %rpm = 1400;
-    rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "pchip");
-end
+% function rpm = get_rpm(t, spin_profile)
+%     %build spin profile:
+%     %rpm = 1400;
+%     rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "pchip");
+% end
