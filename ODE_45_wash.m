@@ -1,67 +1,131 @@
-m = 60;
-k = 9*2;
-c = 120*2;
-m_unb = 0.5;
-r = 0.25;
+clear
 
-load("SpinProfile_linear.mat")
+%% 
+Washer_Init
 
+load("SpinProfiles.mat");
+spinProfile = spinProfiles.Actual.Base;
+
+InitCond = [0, 0.0329, 0, 0, 0];
 
 %% Solver
-simDuration = spinProfile(1,end);                                                                       %Set sim duration
+simDuration = spinProfile(1,end);                                                %Set sim duration
+%simDuration = 100;
 
-[t, y]= ode45(@(t,y) tub_motion(t, y, m, k, c, m_unb, r, spinProfile), [0,simDuration], [0,0]);         %ODE solver
+[t, y]= ode45(@(t,y) Washer_2DOF(t, y, Washer, spinProfile), [0,simDuration], InitCond);         %ODE solver
 
 
 %% Post process
 %Generate the spin profile using the time steps output of ODE45
 
-spin_profile_recreated = zeros(length(t), 1);                                                           %Create zero array for spin profile
+% spin_profile_recreated = zeros(length(t), 1);                                                           %Create zero array for spin profile
+% 
+% for i = 1:length(t)
+%     spin_profile_recreated(i) = get_rpm(t(i), spinProfile);                                             %Compute rpm corresponding to i'th time step
+% end
 
-for i = 1:length(t)
-    spin_profile_recreated(i) = get_rpm(t(i), spinProfile);                                             %Compute rpm corresponding to i'th time step
+% Make machine structure
+ReSolve = zeros(length(y), 7);
+
+LTub = figure("Name", "Live Tub");
+figure(LTub)
+%xlim([-280*10^-3, 280*10^-3])
+%ylim([-430*10^-3, 335*10^-3])
+hold on
+
+% Display spring nodes
+for i=1:length(Washer.Springs)
+    N = Washer.Springs{i,1}.getFixedNode();
+    plot(N(1), N(2), '-o', Color='red')     
 end
 
+% Display damper nodes
+for i=1:length(Washer.Dampers)
+    N = Washer.Dampers{i,1}.getFixedNode();
+    plot(N(1), N(2), '^', Color='blue')     
+end
+
+% Tub animation
+%%
+for i  = 1:length(t)
+    % Update attenuators to next step 
+    RPM = get_rpm(t(i), spinProfile);
+    Omega = 2*pi/60*RPM;
+    Theta = y(i, 5);
+
+    F_Unb = Washer.UnbMass * Washer.Radius * Omega.^2;
+
+    cellfun(@(Att) Att.Update(y(i, 1:2), y(i, 3:4)), Washer.Springs);
+    cellfun(@(Att) Att.Update(y(i, 1:2), y(i, 3:4)), Washer.Dampers); 
+    SpringForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Springs, 'UniformOutput', false)), 1);
+    DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1);
+    ReSolve(i, 1:2) = SpringForce;
+    ReSolve(i, 3:4) = DamperForce;
+
+    ReSolve(i, 5) = RPM; 
+
+    ReSolve(i, 6:7) = [F_Unb*cos(Theta), F_Unb*sin(Theta)];
+    %plot(y(i, 1), y(i, 2), '.', Color='black')
+    %pause(0.001)
+end
+
+plot(y(:, 1), y(:,2))
+
 %% Plotting                                                  
-tub_amp_plot = figure('Name','Tub amp plot');                                                  %Create a new figure to display tub displacement plot                                                     
+%Plot the result of solver
 
-figure(tub_amp_plot)                                                                                    %Set figure as current figure
-tub_amp_plot.Position = [150, 250, 1250, 500];                                                          %Set figure popup location
+% Tub plots
+Output = figure('Name','Output', 'NumberTitle','off');
+figure(Output);
+Output.Position = [10, 350, 1520, 400];
 
-% Time vs Tub displacement 
-subplot(1, 2, 1)                              %Create subplot and set as the current figure    
-plot(t,y(:,2), 'blue');
-hold on 
-plot(t,y(:,1), 'red');
-hold off
-title("Tub displacement w.r.t time")
-xlabel("Time (s)")                                                                                                                                          
-ylabel("Tub displacement (m)")
-xlim([0,simDuration])                         %Set X lim to ensure all data is visible                                              
-%ylim([-0.005, 0.005])
+subplot(1, 2, 1)
+plot(t, y(:, 1:2))
+legend('Tub X', 'Tub Y')
+title("Tub Center")
+%xlim([0, simDuration(2)])
+%ylim([-0.025, 0.025])
 
-%Plot Time vs RPM. RPM is the regenerated graph
 subplot(1, 2, 2)
-plot(t,spin_profile_recreated, 'red');
-title("R.P.M w.r.t time")
-xlabel("Time (s)")                                                                                                                                          
-ylabel("RPM")
-xlim([0, simDuration])
-ylim([0, 1500])
+plot(t, y(:, 3:4))
+title("Tub Velocity")
+legend('Tub Vel X', 'Tub Vel Y')
+%xlim([0, simDuration(2)])
+%ylim([0, round(omega_max/10)*10+10])
 
+% Force plots
+ForceOut = figure("Name", "Force output", NumberTitle="off");
+figure(ForceOut)
+ForceOut.Position = [10, 50, 1500, 400];
+
+subplot(1,2,1)
+plot(t, ReSolve(:, 1:2))
+title(("Spring Force"))
+legend('Spring Fx', 'Spring Fy')
+
+subplot(1,2,2)
+plot(t, ReSolve(:, 3:4))
+title(("Damper Force"))
+legend('Damper Fx', 'Damper Fy')
+
+% RPM and Omega
+RPM_Dat = figure("Name", "RPM data");
+figure(RPM_Dat);
+ForceOut.Position = [10, 150, 1500, 400];
+
+subplot(1,2,1)
+plot(t, ReSolve(:, 5))
+title("RPM vs Time")
+
+subplot(1, 2, 2)
+plot(t, ReSolve(:, 6:7))
+title("Unbalance forces")
+legend("Force X", "Force Y")
 
 %% Functions
 
-% Input to ODE45
-% System setup
-function dydt= tub_motion(t, y, m, k, c, m_unb, r, spin_profile)
-    rpm = get_rpm(t, spin_profile);
-    omega = rpm*2*pi/60;
-    F0 = m_unb*(omega)^2*r;
-    dydt = [y(2); F0/m*sin(omega*t) - k/m*y(1) - c/m*y(2)];
-end
-
-function rpm = get_rpm(t, spin_profile)
-    %build spin profile:
-    rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "pchip");
-end
+% function rpm = get_rpm(t, spin_profile)
+%     %build spin profile:
+%     %rpm = 1400;
+%     rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "pchip");
+% end
