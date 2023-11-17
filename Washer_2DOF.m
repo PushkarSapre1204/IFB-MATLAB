@@ -15,6 +15,7 @@ function dydt = Washer_2DOF(t, y, Washer, SProf)
     DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1); % Uniform output used to get cell array as return
     
     % Diff array = [TubXDash, TubYDash, TubXDoubleDash, TubYDoubleDash, Omega]
+    dydt = zeros(5,1);
     dydt(1:2,1) = y(3:4);
     dydt(3:4,1) = (F_Unb - SpringForce - DamperForce + Washer.Fg)/Washer.Mass;
     dydt(5, 1) = Omega;
