@@ -19,7 +19,7 @@ function Result = PostProc(T, Y, Washer, SProf)
         DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1);
         Result(i, 1:2) = SpringForce;
         Result(i, 3:4) = DamperForce;
-        Result(i, 5) = RPM;
-        Result(i, 6:7) = [F_Unb*cos(Y(i,5)), F_Unb*sin(Y(i,5))];
+        Result(i, 5:6) = [F_Unb*cos(Y(i,5)), F_Unb*sin(Y(i,5))];
+        Result(i, 7) = RPM;
     end
 end

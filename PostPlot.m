@@ -116,21 +116,6 @@ if Args.DamperForce
     hold off
 end
 
-if Args.RPM
-    % RPM and Omega
-    RPM_Dat = figure("Name", "RPM data");
-    figure(RPM_Dat);
-    RPM_Dat.Position = [10, 150, 1500, 400];
-    
-    title("Spin profile")
-    hold on
-    for i = 1:NSolSet
-        plot(SolData{i}(:,1), PPData{i}(:,5))
-    end
-    legend(Legend)
-    hold off
-end
-
 if Args.UnbForce
     UForce = figure("Name", "Unbalance Force", NumberTitle="off");
     figure(UForce)
@@ -140,7 +125,7 @@ if Args.UnbForce
     title("Unbalance Force X")
     hold on
     for i = 1:NSolSet
-        plot(SolData{i}(:,1), PPData{i}(:,6))
+        plot(SolData{i}(:,1), PPData{i}(:,5))
     end
     legend(Legend)
     hold off
@@ -149,12 +134,26 @@ if Args.UnbForce
     title("Unbalance Force Y")
     hold on
     for i = 1:NSolSet
-        plot(SolData{i}(:,1), PPData{i}(:,7))
+        plot(SolData{i}(:,1), PPData{i}(:,6))
     end
     legend(Legend)
     hold off
 end
 
+if Args.RPM
+    % RPM and Omega
+    RPM_Dat = figure("Name", "RPM data");
+    figure(RPM_Dat);
+    RPM_Dat.Position = [10, 150, 1500, 400];
+    
+    title("Spin profile")
+    hold on
+    for i = 1:NSolSet
+        plot(SolData{i}(:,1), PPData{i}(:,7))
+    end
+    legend(Legend)
+    hold off
+end
 
 %  = [0,388,774,400]
 %  = [774,388,774,400]
