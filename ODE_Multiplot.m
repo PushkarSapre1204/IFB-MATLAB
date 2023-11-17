@@ -1,7 +1,6 @@
-function ODE_Multiplot
 clear
 %% Setup
-Washer_Init                                             % Initialise washer
+Washer = Washer_Init("Actual");                                             % Initialise washer
 S = load("SpinProfiles.mat");                           % Load the required spin profiles
                                                           
 InitCond = [0, 0, 0, 0, 0];
@@ -17,13 +16,14 @@ PostOut = {0, 0, 0, 0};
 
 parfor i = 1:length(SpinProfs)
     simDuration = 200;                     
-    disp(['Solving set', num2str(i)])
+    disp(['Solving set ', num2str(i)])
     [t, y]= ode45(@(t,y) Washer_2DOF(t, y, Washer, SpinProfs{i}), [0,simDuration], InitCond);
     disp(['Solve ', num2str(i), ' complete'])
     SolOut{i} = [t,y];
     disp(['Processing solve data..', num2str(i)])
     PostOut{i} = PostProc(t, y, Washer, SpinProfs{i});
+    disp(["Processing ", i, " complete"])
 end
+disp("Plotting data")
 %%
-   
-end
+PostPlot(SolOut, PostOut, ProfileSet)   
