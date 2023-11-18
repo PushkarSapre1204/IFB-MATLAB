@@ -35,5 +35,6 @@ switch Mode
 end
 clear TC
 
+Washer.Tub = transpose([Washer.Springs{1,1}.getNodeOffset; Washer.Springs{2,1}.getNodeOffset; Washer.Dampers{1,1}.getNodeOffset; Washer.Dampers{2,1}.getNodeOffset]);
 end
 
