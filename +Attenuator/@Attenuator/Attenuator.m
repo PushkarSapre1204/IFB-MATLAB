@@ -39,7 +39,7 @@ classdef Attenuator < handle
 
         function nOff = getNodeOffset(obj)
             nOff = obj.NodeOffset;
-        end    
+        end
 
         function MN = getMobileNode(obj)
             MN = obj.MobileNode;
@@ -48,16 +48,22 @@ classdef Attenuator < handle
         function MNV = getMobileNodeVel(obj)
             MNV = obj.MobileNodeVel;
         end
-        
-    % Main methods
 
-    function obj = Update(obj, NewTubLocation, tubVel)         % Get the new tub velocity and displacement. Update self velocities accordingly.
+        % Main methods
+
+        function obj = Update(obj, NewTubLocation, tubVel)         % Get the new tub velocity and displacement. Update self velocities accordingly.
             obj.MobileNode = NewTubLocation + obj.NodeOffset;
             obj.MobileNodeVel = tubVel;
         end
-            
+        
+        function obj = UdpateMNode(obj, NewLoc, NewVel)
+            obj.MobileNode = NewLoc;
+            obj.MobileNodeVel = NewVel;
+        end
     end
 
+
+    
     methods (Abstract)
         f = Force(obj)
     end
