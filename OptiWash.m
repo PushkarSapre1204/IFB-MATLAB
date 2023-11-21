@@ -1,0 +1,2 @@
+function [] = OptiWash(Inputs, SProf)
+    
