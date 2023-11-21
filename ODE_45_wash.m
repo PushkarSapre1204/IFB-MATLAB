@@ -61,10 +61,8 @@ for i  = 1:length(t)
     DamperForce = sum(cell2mat(cellfun(@(Att) Att.Force(), Washer.Dampers, 'UniformOutput', false)), 1);
     ReSolve(i, 1:2) = SpringForce;
     ReSolve(i, 3:4) = DamperForce;
-
-    ReSolve(i, 5) = RPM; 
-
-    ReSolve(i, 6:7) = [F_Unb*cos(Theta), F_Unb*sin(Theta)];
+    ReSolve(i, 5:6) = [F_Unb*cos(Theta), F_Unb*sin(Theta)];
+    ReSolve(i, 7) = RPM; 
     %plot(y(i, 1), y(i, 2), '.', Color='black')
     %pause(0.001)
 end
@@ -114,18 +112,10 @@ figure(RPM_Dat);
 ForceOut.Position = [10, 150, 1500, 400];
 
 subplot(1,2,1)
-plot(t, ReSolve(:, 5))
+plot(t, ReSolve(:, 7))
 title("RPM vs Time")
 
 subplot(1, 2, 2)
-plot(t, ReSolve(:, 6:7))
+plot(t, ReSolve(:, 5:6))
 title("Unbalance forces")
 legend("Force X", "Force Y")
-
-%% Functions
-
-% function rpm = get_rpm(t, spin_profile)
-%     %build spin profile:
-%     %rpm = 1400;
-%     rpm = interp1(spin_profile(1,:), spin_profile(2,:), t, "pchip");
-% end
