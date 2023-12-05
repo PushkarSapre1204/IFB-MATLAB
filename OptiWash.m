@@ -1,4 +1,4 @@
-function [Peak] = OptiWash(Inputs)
+function Output = OptiWash(Inputs, spinProfile)
 import Attenuator.*
 
 Washer.Mass = 60;
@@ -16,16 +16,19 @@ TC = [0,0];
     Washer.Dampers(2,1) = {Damper("FNode", [ 263.20*10^-3, -422.6*10^-3], "MNode", [ 186.33*10^-3, -218.22*10^-3], "tubCenter", [0,0], "C", Inputs(2))};
 
 %%  Solver setup
-    load("SpinProfiles.mat");
-    spinProfile = spinProfiles.Actual.Base;
-    
-    InitCond = [0, 0.0329, 0, 0, 0];
+%     LoadData = load("SpinProfiles.mat");                        % Load all 
+%     spinProfile = LoadData.spinProfiles.Actual.Base;
+%     clear LoadData
+
+    InitCond = [0, -0.001393, 0, 0, 0];
     simDuration = spinProfile(1,end);     
 
 %%  Solve
-    [t, y]= ode45(@(t,y) Washer_2DOF(t, y, Washer, spinProfile), [0,simDuration], InitCond);
+    [t, y]= ode45(@(t,y) Washer_2DOF(t, y, Washer, spinProfile), [0,simDuration], InitCond); %#ok<ASGLU> 
     Peak = max(y(:, 1));
-   
+    
+
+    Output = [Peak];
 end
 % Design variables:
 % S1, S2, D1, D2 tub nodes
