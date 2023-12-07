@@ -1,4 +1,14 @@
-function Washer = Washer_Init(Mode)
+function Washer = Washer_Init(Mode, Args)
+arguments
+    Mode
+    Args.SFNode
+    Args.DFNode
+    Args.SMNode
+    Args.DMNode
+    Args.SStiff
+    Args.DStiff
+end
+
 import Attenuator.*
 
 Washer.Mass = 60;
@@ -9,12 +19,21 @@ TC = [0,0];
 
 switch Mode
     %% Actual Washer
-    case "Actual"
+    case "Existing"
         Washer.Springs(1,1) = {Spring("FNode", [-275.3*10^-3, 332.33*10^-3], "MNode", [-253.5*10^-3, 130*10^-3], "tubCenter", TC, "K", 9000, "L0", 172*10^-3)};
         Washer.Springs(2,1) = {Spring("FNode", [ 275.3*10^-3, 332.33*10^-3], "MNode", [ 253.5*10^-3, 130*10^-3], "tubCenter", TC, "K", 9000, "L0", 172*10^-3)};
 
-        Washer.Dampers(1,1) = {Damper("FNode", [-263.20*10^-3, -422.6*10^-3], "MNode", [-186.33*10^-3, -218.22*10^-3], "tubCenter", [0,0], "C", 120)};
-        Washer.Dampers(2,1) = {Damper("FNode", [ 263.20*10^-3, -422.6*10^-3], "MNode", [ 186.33*10^-3, -218.22*10^-3], "tubCenter", [0,0], "C", 120)};
+        Washer.Dampers(1,1) = {Damper("FNode", [-263.20*10^-3, -422.6*10^-3], "MNode", [-186.33*10^-3, -218.22*10^-3], "tubCenter", TC, "C", 120)};
+        Washer.Dampers(2,1) = {Damper("FNode", [ 263.20*10^-3, -422.6*10^-3], "MNode", [ 186.33*10^-3, -218.22*10^-3], "tubCenter", TC, "C", 120)};
+    
+    case "Custom"
+        Washer.Springs(1,1) = {Spring("FNode", Args.SFNode, "MNode", Args.SMNode, "tubCenter", TC, "K", Args.SStiff, "L0", 172*10^-3)};
+        Washer.Springs(2,1) = {Spring("FNode", Args.SFNode, "MNode", Args.SMNode, "tubCenter", TC, "K", Args.SStiff, "L0", 172*10^-3)};
+
+        Washer.Dampers(1,1) = {Damper("FNode", Args.DFNode, "MNode", Args.DMNode, "tubCenter", TC, "C", Args.DStiff)};
+        Washer.Dampers(2,1) = {Damper("FNode", Args.DFNode, "MNode", Args.DMNode, "tubCenter", TC, "C", Args.DStiff)};
+
+
 
     case "2-DOF test"
         %% Test Washer
