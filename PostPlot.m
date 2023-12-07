@@ -8,14 +8,14 @@ arguments
     PPData
     ProfSet
     Args.TubCenter logical = true
-    Args.TubVel logical = true
-    Args.SpringForce logical = true
-    Args.DamperForce logical = true
-    Args.UnbForce logical = true
-    Args.RPM logical = true
+    Args.TubVel logical = false
+    Args.SpringForce logical = false
+    Args.DamperForce logical = false
+    Args.UnbForce logical = false
+    Args.RPM logical = false    
 end
 
-T = linspace(1,20,9177);
+% T = linspace(1,20,9177);
 NSolSet = length(SolData);
 Legend = fieldnames(ProfSet);
 
