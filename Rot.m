@@ -1,12 +1,12 @@
 function R = Rot(Axis, Ang, Unit)
-    if Unit == "Rad" || "Deg"
-        if Unit == "Rad"
-            Ang = 180/pi*Ang;
+    if Unit == "Rad" || Unit ==  "Deg"
+        if Unit == "Deg"
+            Ang = pi/180*Ang;
         end
         switch Axis
     
             case 'Z'
-                R = [cos(Ang), -sin(Ang), 0; sin(Ang), cos(Ang), 0; 0, 0, 1];
+                R = [cos(Ang), -sin(Ang); sin(Ang), cos(Ang)];
            
             case 'Y'
             
@@ -16,6 +16,6 @@ function R = Rot(Axis, Ang, Unit)
                 disp("Incorrect rotation axis")
         end
     else
-        dips("Incorrect angle unit")
+        disp("Incorrect angle unit")
     end
 end
