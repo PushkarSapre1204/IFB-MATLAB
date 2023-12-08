@@ -17,8 +17,8 @@ classdef Attenuator < handle
     methods                 
         function obj = Attenuator(Args)
             arguments
-                Args.FNode (1,3)
-                Args.MNode (1,3)
+                Args.FNode (1,2)
+                Args.MNode (1,2)
                 Args.tubCenter 
             end
             obj.FixedNode = Args.FNode;
