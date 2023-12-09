@@ -30,7 +30,7 @@ classdef Spring < Attenuator.Attenuator
         end
 
         function L = get.Compression(obj)
-            L = sqrt(sum((obj.FixedNode - obj.MobileNode).^2));          % Find current length
+            L = norm(obj.FixedNode - obj.MobileNode);          % Find current length
             L = obj.L0 - L;         % Find delta L
         end
         function f = Force(obj, Args)
