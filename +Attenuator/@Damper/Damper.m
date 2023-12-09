@@ -12,10 +12,10 @@ classdef Damper < Attenuator.Attenuator
     methods 
         function obj = Damper(Args)
             arguments
-                Args.C %= 10
-                Args.FNode %= [0,0]
-                Args.MNode %= [0.01, 0]
-                Args.tubCenter %= [0.01,0]
+                Args.C
+                Args.FNode
+                Args.MNode
+                Args.tubCenter
             end
             obj@Attenuator.Attenuator("FNode", Args.FNode, "MNode", Args.MNode, "tubCenter", Args.tubCenter)
             if Args.C == 0
@@ -40,7 +40,7 @@ classdef Damper < Attenuator.Attenuator
     % Definition of Attenuator abstract methods
     methods    
         function f = Force(obj)
-            f = obj.Constant.*obj.DamperVelocity;
+            f = obj.Constant*obj.DamperVelocity;
         end
     end
 end
