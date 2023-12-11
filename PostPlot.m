@@ -1,4 +1,4 @@
-function PostPlot(SolData,PPData, ProfSet, Args)
+function PostPlot(SolData,PPData, Legend, Args)
 % SolData: Matrix with raw solver output
 % PPData: Matirx with post process data
 % Args: Set true or false to request speficifc data
@@ -6,7 +6,7 @@ function PostPlot(SolData,PPData, ProfSet, Args)
 arguments
     SolData
     PPData
-    ProfSet
+    Legend
     Args.TubCenter logical = true
     Args.TubVel logical = false
     Args.SpringForce logical = false
@@ -17,7 +17,7 @@ end
 
 % T = linspace(1,20,9177);
 NSolSet = length(SolData);
-Legend = fieldnames(ProfSet);
+%Legend = fieldnames(ProfSet);
 
 if Args.TubCenter
     TC = figure("Name", "Tub Center");
