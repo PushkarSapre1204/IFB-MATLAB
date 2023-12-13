@@ -59,4 +59,4 @@ switch VarPar
 end
 disp("Plotting data")
 %%
-PostPlot(SolOut, PostOut, Legend)   
+PostPlot(SolOut, PostOut, Legend, "TubVel", true)   
